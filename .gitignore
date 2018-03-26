@@ -1,0 +1,5 @@
+#Ignore files from Intellij
+.idea/
+
+#Ignore Maven's target directory
+target/
