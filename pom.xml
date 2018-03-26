@@ -73,7 +73,7 @@
           <sources>
 
             <source>
-              <directory>src/main/nativ/srce</directory>
+              <directory>src/main/native/src</directory>
               <fileNames>
                 <fileName>JniSample.c</fileName>
               </fileNames>
