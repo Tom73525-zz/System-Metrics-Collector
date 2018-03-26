@@ -20,8 +20,7 @@ public class App {
 *		}
 */
 		static {
-        //System.loadLibrary("mcollect");
-			System.load("/home/rob/Documents/workspace/capstone/so_outside_of_jar/metrics-collection-app/target/libmcollect.so");
+      System.loadLibrary("mcollect");
 		}
 
 		private native void pidList();
