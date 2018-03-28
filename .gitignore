@@ -1,5 +1,9 @@
 #Ignore files from Intellij
 .idea/
+*.iml
 
 #Ignore Maven's target directory
 target/
+
+#Ignore Mac_os filesystem
+.DS_Store
