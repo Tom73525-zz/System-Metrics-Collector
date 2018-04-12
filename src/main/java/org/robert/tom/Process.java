@@ -2,104 +2,112 @@ package org.robert.tom;
 
 
 public class Process {
-	private int pid, ppid, numThreads;
-	private String name;
-	private char state;
-	private long utime, stime, cutime, cstime, starttime, vmsize, bytesSent, bytesReceived;
+    private int pid, ppid, numThreads;
+    private String name;
+    private char state;
+    private long utime, stime, cutime, cstime, starttime, vmsize, bytesSent, bytesReceived;
 
-	public int getPid(){
-		return this.pid;
-	}
+    public int getPid() {
+        return this.pid;
+    }
 
-	public void setPid(int inPid){
-		this.pid = inPid;
-	}
+    public void setPid(int inPid) {
+        this.pid = inPid;
+    }
 
-	public int getPpid(){
-		return this.ppid;
-	}
+    public int getPpid() {
+        return this.ppid;
+    }
 
-	public void setPpid(int inPpid){
-		this.ppid = inPpid;
-	}
+    public void setPpid(int inPpid) {
+        this.ppid = inPpid;
+    }
 
-	public int getNumThreads(){
-		return this.numThreads;
-	}
+    public int getNumThreads() {
+        return this.numThreads;
+    }
 
-	public void setNumThreads(int inNumThreads){
-		this.numThreads = inNumThreads;
-	}
+    public void setNumThreads(int inNumThreads) {
+        this.numThreads = inNumThreads;
+    }
 
-	public String getName(){
-		return this.name;
-	}
+    public char getState() {
+        return state;
+    }
 
-	public void setName(String inCmd){
-		this.name = inCmd;
-	}
+    public void setState(char state) {
+        this.state = state;
+    }
 
-	public long getUtime(){
-		return this.utime;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setUtime(long inUtime){
-		this.utime = inUtime;
-	}
+    public void setName(String inCmd) {
+        this.name = inCmd;
+    }
 
-	public long getStime(){
-		return this.stime;
-	}
+    public long getUtime() {
+        return this.utime;
+    }
 
-	public void setStime(long inStime){
-		this.stime = inStime;
-	}
+    public void setUtime(long inUtime) {
+        this.utime = inUtime;
+    }
 
-	public long getCutime(){
-		return this.cutime;
-	}
+    public long getStime() {
+        return this.stime;
+    }
 
-	public void setCutime(long inCutime){
-		this.cutime = inCutime;
-	}
+    public void setStime(long inStime) {
+        this.stime = inStime;
+    }
 
-	public long getCstime(){
-		return this.cstime;
-	}
+    public long getCutime() {
+        return this.cutime;
+    }
 
-	public void setCstime(long inCstime){
-		this.cstime = inCstime;
-	}
+    public void setCutime(long inCutime) {
+        this.cutime = inCutime;
+    }
 
-	public long getStartTime(){
-		return this.starttime;
-	}
+    public long getCstime() {
+        return this.cstime;
+    }
 
-	public void setStartTime(long inStartTime){
-		this.starttime = inStartTime;
-	}
+    public void setCstime(long inCstime) {
+        this.cstime = inCstime;
+    }
 
-	public long getVmSize(){
-		return this.vmsize;
-	}
+    public long getStartTime() {
+        return this.starttime;
+    }
 
-	public void setVmSize(long inVmSize){
-		this.vmsize = inVmSize;
-	}
+    public void setStartTime(long inStartTime) {
+        this.starttime = inStartTime;
+    }
 
-	public long getBytesSent(){
-		return this.bytesSent;
-	}
+    public long getVmSize() {
+        return this.vmsize;
+    }
 
-	public void setBytesSent(long inBytesSent){
-		this.bytesSent = inBytesSent;
-	}
+    public void setVmSize(long inVmSize) {
+        this.vmsize = inVmSize;
+    }
 
-	public long getBytesReceived(){
-		return this.bytesReceived;
-	}
+    public long getBytesSent() {
+        return this.bytesSent;
+    }
 
-	public void setBytesReceived(long inBytesReceived){
-		this.bytesReceived = inBytesReceived;
-	}
+    public void setBytesSent(long inBytesSent) {
+        this.bytesSent = inBytesSent;
+    }
+
+    public long getBytesReceived() {
+        return this.bytesReceived;
+    }
+
+    public void setBytesReceived(long inBytesReceived) {
+        this.bytesReceived = inBytesReceived;
+    }
 }
