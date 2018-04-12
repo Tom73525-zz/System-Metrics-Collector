@@ -41,9 +41,13 @@ public class MetricCollector {
         File statFile = new File(procDir, "stat");
         try{
             Scanner scanner = new Scanner(statFile);
-            process.setPid(scanner.nextInt());
-            process.setName(scanner.next("\\((.+?)\\)"));
-            process.set
+            process.setPid(scanner.nextInt()); // 1
+            process.setName(scanner.next("\\((.+?)\\)")); // 2
+            process.setState(scanner.next().charAt(0)); // 3
+            process.setPpid(scanner.nextInt()); // 4
+            scanner.next();
+            scanner.next();
+            process.setNumThreads(scanner.nextInt()); // 20
         } catch(FileNotFoundException e) {
             e.printStackTrace();
             return null;

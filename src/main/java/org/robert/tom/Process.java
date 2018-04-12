@@ -6,6 +6,7 @@ public class Process {
     private String name;
     private char state;
     private long utime, stime, cutime, cstime, starttime, vmsize, bytesSent, bytesReceived;
+    private double cpuUsage;
 
     public int getPid() {
         return this.pid;
@@ -109,5 +110,13 @@ public class Process {
 
     public void setBytesReceived(long inBytesReceived) {
         this.bytesReceived = inBytesReceived;
+    }
+
+    public double getCpuUsage() {
+        return cpuUsage;
+    }
+
+    public void setCpuUsage(double cpuUsage) {
+        this.cpuUsage = cpuUsage;
     }
 }
