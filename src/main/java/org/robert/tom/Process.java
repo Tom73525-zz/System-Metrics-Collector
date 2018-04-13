@@ -2,33 +2,33 @@ package org.robert.tom;
 
 
 public class Process {
-    private int pid, ppid, numThreads;
+    private Integer pid, ppid, numThreads;
     private String name;
     private char state;
-    private long utime, stime, cutime, cstime, starttime, vmsize, bytesSent, bytesReceived;
-    private double cpuUsage;
+    private Long utime, stime, cutime, cstime, starttime, vmsize, bytesSent, bytesReceived;
+    private Double cpuUsage;
 
-    public int getPid() {
+    public Integer getPid() {
         return this.pid;
     }
 
-    public void setPid(int inPid) {
+    public void setPid(Integer inPid) {
         this.pid = inPid;
     }
 
-    public int getPpid() {
+    public Integer getPpid() {
         return this.ppid;
     }
 
-    public void setPpid(int inPpid) {
+    public void setPpid(Integer inPpid) {
         this.ppid = inPpid;
     }
 
-    public int getNumThreads() {
+    public Integer getNumThreads() {
         return this.numThreads;
     }
 
-    public void setNumThreads(int inNumThreads) {
+    public void setNumThreads(Integer inNumThreads) {
         this.numThreads = inNumThreads;
     }
 
@@ -48,75 +48,75 @@ public class Process {
         this.name = inCmd;
     }
 
-    public long getUtime() {
+    public Long getUtime() {
         return this.utime;
     }
 
-    public void setUtime(long inUtime) {
+    public void setUtime(Long inUtime) {
         this.utime = inUtime;
     }
 
-    public long getStime() {
+    public Long getStime() {
         return this.stime;
     }
 
-    public void setStime(long inStime) {
+    public void setStime(Long inStime) {
         this.stime = inStime;
     }
 
-    public long getCutime() {
+    public Long getCutime() {
         return this.cutime;
     }
 
-    public void setCutime(long inCutime) {
+    public void setCutime(Long inCutime) {
         this.cutime = inCutime;
     }
 
-    public long getCstime() {
+    public Long getCstime() {
         return this.cstime;
     }
 
-    public void setCstime(long inCstime) {
+    public void setCstime(Long inCstime) {
         this.cstime = inCstime;
     }
 
-    public long getStartTime() {
+    public Long getStartTime() {
         return this.starttime;
     }
 
-    public void setStartTime(long inStartTime) {
+    public void setStartTime(Long inStartTime) {
         this.starttime = inStartTime;
     }
 
-    public long getVmSize() {
+    public Long getVmSize() {
         return this.vmsize;
     }
 
-    public void setVmSize(long inVmSize) {
+    public void setVmSize(Long inVmSize) {
         this.vmsize = inVmSize;
     }
 
-    public long getBytesSent() {
+    public Long getBytesSent() {
         return this.bytesSent;
     }
 
-    public void setBytesSent(long inBytesSent) {
+    public void setBytesSent(Long inBytesSent) {
         this.bytesSent = inBytesSent;
     }
 
-    public long getBytesReceived() {
+    public Long getBytesReceived() {
         return this.bytesReceived;
     }
 
-    public void setBytesReceived(long inBytesReceived) {
+    public void setBytesReceived(Long inBytesReceived) {
         this.bytesReceived = inBytesReceived;
     }
 
-    public double getCpuUsage() {
+    public Double getCpuUsage() {
         return cpuUsage;
     }
 
-    public void setCpuUsage(double cpuUsage) {
+    public void setCpuUsage(Double cpuUsage) {
         this.cpuUsage = cpuUsage;
     }
 }
