@@ -32,7 +32,6 @@ public class MetricCollector {
 
   public ArrayList<Integer> getCurrentPidlist() throws IOException {
     File procDir;
-
     procDir = new File("/proc/");
 
     if (!procDir.exists()) {
@@ -52,7 +51,7 @@ public class MetricCollector {
     });
 
     if (directories.length > 0) {
-      ArrayList<Integer> pidList = new ArrayList<>();
+      ArrayList<Integer> pidList = new ArrayList<Integer>();
       for (String dir : directories) {
         pidList.add(Integer.valueOf(dir));
       }
@@ -63,12 +62,18 @@ public class MetricCollector {
 
   public Process collectMetrics(Integer pid) {
     Process process = new Process();
-    File procDir = new File("/proc/" + pid.toString());
-    File statFile = new File(procDir, "stat");
-    File statusFile = new File(procDir, "status");
+    File statFile = new File("/proc/" + pid.toString() + "/stat");
+    File statusFile = new File("/proc/" + pid.toString() + "/status");
     File netDevFile = new File("/proc/" + pid.toString() + "/net/dev");
     Scanner scanner = null;
 
+    /**
+     * Retrieving metrics for process with [pid]
+     *   Scans 'stat' file within process directory,
+     *    splitting the file into seperate String objects in an array.
+     *   Places values from array into 'process' based on position
+     *    within the line, as described in proc documentation.
+     */
     try {
       scanner = new Scanner(statFile);
       String[] stats = scanner.nextLine().split("\\s+");
@@ -87,13 +92,6 @@ public class MetricCollector {
         System.out.println("ERROR: Incorrect number of elements in stat for pid: " + pid.toString());
         return null;
       }
-//      process.setPid(scanner.nextInt()); // 1
-//      process.setName(scanner.next("\\((.+?)\\)")); // 2
-//      process.setState(scanner.next().charAt(0)); // 3
-//      process.setPpid(scanner.nextInt()); // 4
-//      scanner.next();
-//      scanner.next();
-//      process.setNumThreads(scanner.nextInt()); // 20
     } catch (FileNotFoundException e) {
       e.printStackTrace();
       return null;
@@ -103,13 +101,20 @@ public class MetricCollector {
       }
     }
 
+    /**
+     * Retrieving VmSize from /proc/[pid]/status
+     *  Scans lines in the file until a line containing the string "VmSize"
+     *    is found.
+     *  Once found, the second to last token in the string (after splitting
+     *    the string using spaces as a delimiter) will be the desired value.
+     */
     try {
       scanner = new Scanner(statusFile);
       String currentLine;
       while (scanner.hasNextLine()) {
-        if (scanner.next().contains("VmSize")) {
-          process.setVmSize(scanner.nextLong());
-          scanner.nextLine();
+        String[] scanLine = scanner.nextLine().split("\\s+");
+        if (scanLine[0].contains("VmSize")) {
+          process.setVmSize(Long.valueOf(scanLine[scanLine.length - 2]));
         }
       }
     } catch (FileNotFoundException e) {
@@ -120,24 +125,27 @@ public class MetricCollector {
       }
     }
 
+    /**
+     * Calculating network traffic to and from process using /proc/[pid]/net/dev
+     *  Skips first two lines of file (they contain header information to lay out
+     *    data in a table).
+     *  For each line after header information, adds 2rd value in line to accumulator
+     *    for bytes received, and adds the 10th value to bytes sent.
+     */
     try {
       scanner = new Scanner(netDevFile);
       Long recBytes = 0L;
       Long sentBytes = 0L;
       String currentLine;
-      scanner.nextLine();
-      while (scanner.hasNextLine()) {
-        scanner.next();
-        recBytes += scanner.nextLong(); // Add received bytes from current line's interface
-        scanner.next(); // rec packets
-        scanner.next(); // rec errors
-        scanner.next(); // rec drop
-        scanner.next(); // rec fifo
-        scanner.next(); // rec frame
-        scanner.next(); // rec compressed
-        scanner.next(); // rec multicast
-        sentBytes += scanner.nextLong(); // Add sent bytes from current line's interface
+
+      if (scanner.hasNextLine()) {
         scanner.nextLine();
+        scanner.nextLine();
+        while (scanner.hasNextLine()) {
+          String[] scanLine = scanner.nextLine().trim().split("\\s+");
+          recBytes += Long.valueOf(scanLine[1]);
+          sentBytes += Long.valueOf(scanLine[9]);
+        }
       }
       process.setBytesReceived(recBytes);
       process.setBytesSent(sentBytes);
