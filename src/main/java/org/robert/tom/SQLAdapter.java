@@ -1,13 +1,11 @@
 package org.robert.tom;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.HashMap;
 
 public class SQLAdapter {
 
-  private static Connection connection = null;
+  public static Connection connection = null;
   private static Statement statement = null;
 
   public SQLAdapter() {
@@ -19,11 +17,11 @@ public class SQLAdapter {
 
       statement = connection.createStatement();
 
-      String createProcess = "CREATE TABLE PROCESS(" +
+      String createProcess = "CREATE TABLE IF NOT EXISTS PROCESS(" +
               "pid INTEGER PRIMARY KEY," + "ppid INTEGER," +
               "p_name VARCHAR(25));";
 
-      String createMetrics = "CREATE TABLE METRICS( \n" +
+      String createMetrics = "CREATE TABLE IF NOT EXISTS METRICS( \n" +
               "pid INTEGER REFERENCES PROCESS(pid) ON UPDATE CASCADE,\n" +
               "p_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,\n" +
               "p_size INTEGER,\n" +
@@ -43,12 +41,6 @@ public class SQLAdapter {
     }
   }
 
-  public static void main(String arg[]) {
-    SQLAdapter sqlAdapter = new SQLAdapter();
-
-
-  }
-
   protected boolean saveProcessMetrics(int pid,
                                        int ppid,
                                        String p_name,
@@ -59,17 +51,17 @@ public class SQLAdapter {
                                        long p_bytes_received,
                                        double p_cpu_utilization){
     try {
-      String insertProcess = "INSERT INTO PROCESS VALUES(\n" +
+      String insertProcess = "INSERT OR REPLACE INTO PROCESS VALUES(\n" +
               pid + ",\n" +
-              ppid + ",\n" +
-              p_name + "\n);" +
+              ppid + ",\n'" +
+              p_name + "'\n);" +
               "\n";
 
       String insertMetrics = "INSERT INTO METRICS VALUES(\n"+
               pid + ",\n" +
-              "DEFAULT" + ",\n" +
-              p_size + ",\n" +
-              p_state + ",\n" +
+              "CURRENT_TIMESTAMP" + ",\n" +
+              p_size + ",\n'" +
+              p_state + "',\n" +
               p_threads + ",\n" +
               p_bytes_sent + ",\n" +
               p_bytes_received + ",\n" +
@@ -82,6 +74,31 @@ public class SQLAdapter {
 
     } catch (SQLException sql) {
       sql.printStackTrace();
+    }
+    return false;
+  }
+
+  protected boolean getProcessMetrics(int pid){
+
+    HashMap<String,String> process = null;
+    String getMetrics = "SELECT *FROM METRICS WHERE pid = "+pid;
+
+    try {
+      ResultSet result = statement.executeQuery(getMetrics);
+
+    }catch (Exception e){
+      e.printStackTrace();
+    }
+
+    return false;
+  }
+  protected boolean deleteMetrics(int pid){
+    try{
+      statement.executeUpdate("DELETE FROM PROCESS WHERE pid = "+pid);
+      statement.executeUpdate("DELETE FROM METRICS WHERE pid = "+pid);
+      return true;
+    }catch (Exception e){
+      e.printStackTrace();
     }
     return false;
   }
