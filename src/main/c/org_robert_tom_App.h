@@ -7,14 +7,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-/*
- * Class:     org_robert_tom_App
- * Method:    pidList
- * Signature: ()V
- */
-JNIEXPORT void JNICALL Java_org_robert_tom_App_pidList
-  (JNIEnv *, jobject);
-
 #ifdef __cplusplus
 }
 #endif

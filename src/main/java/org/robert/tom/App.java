@@ -1,52 +1,58 @@
 package org.robert.tom;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
 
-/**
- * Hello world!
- *
- */
+
 public class App {
 
-/**
-*		static {
-*			try {
-*				LibraryLoader.loadLibrary("libmetrics");
-*			} catch (Exception e) {
-*				System.out.println("LibraryLoader didn't work.");
-*				System.err.println(e);
-*				System.exit(1);
-*			}
-*		}
-*/
-		static {
-      System.loadLibrary("mcollect");
-		}
+    private static void launchGUI() {
+        String[] columns = new String[]{
+                "pid", "name", "state", "ppid", "utime", "stime", "numThreads",
+                "startTime", "vmSize", "bytesReceived", "bytesSent"
+        };
 
-		private native void pidList();
+        JFrame frame = new JFrame("Metrics Collection App");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		private static void launchGUI() {
-			JFrame frame = new JFrame("Metrics Collection App");
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ArrayList<Process> procs = new ArrayList<Process>();
+        MetricCollector mc = new MetricCollector();
+        try {
+            mc.gatherCurrentPidlist();
+            for (Integer currentPid : mc.getPidList()) {
+                procs.add(mc.collectMetrics(currentPid));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-			JLabel label = new JLabel("Metrics go here");
-			frame.getContentPane().add(label);
-			label.setHorizontalAlignment(JLabel.CENTER);
+        // TABLE SETUP
+        JTable table = new JTable();
+        DefaultTableModel tableModel = new DefaultTableModel(0, 0);
+        tableModel.setColumnIdentifiers(columns);
+        table.setModel(tableModel);
 
-			frame.pack();
-			frame.setSize(500, 300);
-			frame.setVisible(true);
-		}
+        for (Process currentProc : procs) {
+            Object[] metricArray = currentProc.getProcessArray();
+            tableModel.addRow(metricArray);
+        }
 
-    public static void main( String[] args ) {
-        System.out.println( "Loading interface..." );
+        JScrollPane scrollPane = new JScrollPane(table);
+        frame.getContentPane().add(scrollPane);
+
+        frame.pack();
+        frame.setSize(500, 300);
+        frame.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Loading interface...");
 
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
-        	public void run() {
-        		launchGUI();
-        	}
+            public void run() {
+                launchGUI();
+            }
         });
-
-        new App().pidList();
     }
 }

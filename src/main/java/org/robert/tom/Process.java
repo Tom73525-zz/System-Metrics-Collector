@@ -8,7 +8,7 @@ public class Process {
     private Long utime, stime, cutime, cstime, starttime, vmsize, bytesSent, bytesReceived;
     private Double cpuUsage;
 
-    public Integer getPid() {
+    public int getPid() {
         return this.pid;
     }
 
@@ -16,7 +16,7 @@ public class Process {
         this.pid = inPid;
     }
 
-    public Integer getPpid() {
+    public int getPpid() {
         return this.ppid;
     }
 
@@ -24,7 +24,7 @@ public class Process {
         this.ppid = inPpid;
     }
 
-    public Integer getNumThreads() {
+    public int getNumThreads() {
         return this.numThreads;
     }
 
@@ -48,7 +48,7 @@ public class Process {
         this.name = inCmd;
     }
 
-    public Long getUtime() {
+    public long getUtime() {
         return this.utime;
     }
 
@@ -56,7 +56,7 @@ public class Process {
         this.utime = inUtime;
     }
 
-    public Long getStime() {
+    public long getStime() {
         return this.stime;
     }
 
@@ -64,7 +64,7 @@ public class Process {
         this.stime = inStime;
     }
 
-    public Long getCutime() {
+    public long getCutime() {
         return this.cutime;
     }
 
@@ -72,7 +72,7 @@ public class Process {
         this.cutime = inCutime;
     }
 
-    public Long getCstime() {
+    public long getCstime() {
         return this.cstime;
     }
 
@@ -80,7 +80,7 @@ public class Process {
         this.cstime = inCstime;
     }
 
-    public Long getStartTime() {
+    public long getStartTime() {
         return this.starttime;
     }
 
@@ -88,7 +88,7 @@ public class Process {
         this.starttime = inStartTime;
     }
 
-    public Long getVmSize() {
+    public long getVmSize() {
         return this.vmsize;
     }
 
@@ -96,7 +96,7 @@ public class Process {
         this.vmsize = inVmSize;
     }
 
-    public Long getBytesSent() {
+    public long getBytesSent() {
         return this.bytesSent;
     }
 
@@ -104,7 +104,7 @@ public class Process {
         this.bytesSent = inBytesSent;
     }
 
-    public Long getBytesReceived() {
+    public long getBytesReceived() {
         return this.bytesReceived;
     }
 
@@ -112,11 +112,29 @@ public class Process {
         this.bytesReceived = inBytesReceived;
     }
 
-    public Double getCpuUsage() {
+    public double getCpuUsage() {
         return cpuUsage;
     }
 
     public void setCpuUsage(Double cpuUsage) {
         this.cpuUsage = cpuUsage;
+    }
+
+    public Object[] getProcessArray(){
+        Object[] metricArray = new Object[] {
+                this.pid,
+                this.name,
+                this.state,
+                this.ppid,
+                this.utime,
+                this.stime,
+                this.numThreads,
+                this.starttime,
+                this.vmsize,
+                this.bytesReceived,
+                this.bytesSent
+        };
+
+        return metricArray;
     }
 }
