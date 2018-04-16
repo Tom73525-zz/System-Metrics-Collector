@@ -37,6 +37,9 @@ public class MetricCollector {
     public void gatherCurrentPidList() throws IOException {
         File procDir;
         procDir = new File("/proc/");
+        
+        // Clearing pidList
+        this.pidList.clear();
 
         if (!procDir.exists()) {
             throw new FileNotFoundException(procDir.getPath());
