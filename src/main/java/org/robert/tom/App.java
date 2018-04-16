@@ -14,12 +14,15 @@ public class App {
         };
 
         JFrame frame = new JFrame("Metrics Collection App");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+        // Setting up Objects
         ArrayList<Process> procs = new ArrayList<Process>();
         MetricCollector mc = new MetricCollector();
+
+        // Gathering metrics
         try {
-            mc.gatherCurrentPidlist();
+            mc.gatherCurrentPidList();
             for (Integer currentPid : mc.getPidList()) {
                 procs.add(mc.collectMetrics(currentPid));
             }
@@ -27,12 +30,14 @@ public class App {
             e.printStackTrace();
         }
 
+
         // TABLE SETUP
         JTable table = new JTable();
         DefaultTableModel tableModel = new DefaultTableModel(0, 0);
         tableModel.setColumnIdentifiers(columns);
         table.setModel(tableModel);
 
+        // Adding Proc Rows to table
         for (Process currentProc : procs) {
             Object[] metricArray = currentProc.getProcessArray();
             tableModel.addRow(metricArray);

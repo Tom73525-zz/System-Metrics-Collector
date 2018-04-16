@@ -120,8 +120,8 @@ public class Process {
         this.cpuUsage = cpuUsage;
     }
 
-    public Object[] getProcessArray(){
-        Object[] metricArray = new Object[] {
+    public Object[] getProcessArray() {
+        return new Object[]{
                 this.pid,
                 this.name,
                 this.state,
@@ -134,7 +134,5 @@ public class Process {
                 this.bytesReceived,
                 this.bytesSent
         };
-
-        return metricArray;
     }
 }

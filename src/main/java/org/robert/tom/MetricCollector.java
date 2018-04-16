@@ -8,7 +8,7 @@ public class MetricCollector {
 
     private ArrayList<Integer> pidList;
 
-    public MetricCollector() {
+    MetricCollector() {
         pidList = new ArrayList<Integer>();
     }
 
@@ -34,7 +34,7 @@ public class MetricCollector {
         return uptime;
     }
 
-    public void gatherCurrentPidlist() throws IOException {
+    public void gatherCurrentPidList() throws IOException {
         File procDir;
         procDir = new File("/proc/");
 
@@ -45,19 +45,13 @@ public class MetricCollector {
         String[] directories = procDir.list(new FilenameFilter() {
             public boolean accept(File current, String name) {
                 File tempFile = new File(current, name);
-                if (tempFile.getName().matches("[0-9]+")) {
-                    //System.out.println(tempFile.getName());
-                    return tempFile.isDirectory();
-                } else {
-                    return false;
-                }
+                return tempFile.getName().matches("[0-9]+") &&
+                        tempFile.isDirectory();
             }
         });
 
-        if (directories.length > 0) {
-            for (String dir : directories) {
-                this.pidList.add(Integer.valueOf(dir));
-            }
+        if ((directories != null) && directories.length > 0) {
+            for (String dir : directories) this.pidList.add(Integer.valueOf(dir));
         }
     }
 
@@ -67,39 +61,29 @@ public class MetricCollector {
         File statusFile = new File("/proc/" + pid.toString() + "/status");
         File netDevFile = new File("/proc/" + pid.toString() + "/net/dev");
 
-        /**
-         * Retrieving metrics for process with [pid]
-         *   Scans 'stat' file within process directory,
-         *    splitting the file into seperate String objects in an array.
-         *   Places values from array into 'process' based on position
-         *    within the line, as described in proc documentation.
-         */
+
         // StatFile HERE
         process = getStatMetrics(process, statFile);
 
-        /**
-         * Retrieving VmSize from /proc/[pid]/status
-         *  Scans lines in the file until a line containing the string "VmSize"
-         *    is found.
-         *  Once found, the second to last token in the string (after splitting
-         *    the string using spaces as a delimiter) will be the desired value.
-         */
+
         // STATUSFILE HERE
         process = getStatusMetrics(process, statusFile);
 
-        /**
-         * Calculating network traffic to and from process using /proc/[pid]/net/dev
-         *  Skips first two lines of file (they contain header information to lay out
-         *    data in a table).
-         *  For each line after header information, adds 2rd value in line to accumulator
-         *    for bytes received, and adds the 10th value to bytes sent.
-         */
+
         //NETDEV HERE
         process = getNetDevMetrics(process, netDevFile);
 
         return process;
     }
 
+
+    /**
+     * Retrieving metrics for process with [pid]
+     *   Scans 'stat' file within process directory,
+     *    splitting the file into separate String objects in an array.
+     *   Places values from array into 'process' based on position
+     *    within the line, as described in proc documentation.
+     */
     public Process getStatMetrics(Process process, File statFile) {
         Scanner scanner = null;
 
@@ -133,17 +117,24 @@ public class MetricCollector {
         return process;
     }
 
+
+    /**
+     * Retrieving VmSize from /proc/[pid]/status
+     *  Scans lines in the file until a line containing the string "VmSize"
+     *    is found.
+     *  Once found, the second to last token in the string (after splitting
+     *    the string using spaces as a delimiter) will be the desired value.
+     */
     public Process getStatusMetrics(Process process, File statusFile) {
         Scanner scanner = null;
         Long vmSize = 0L;
 
         try {
             scanner = new Scanner(statusFile);
-            String currentLine;
             while (scanner.hasNextLine()) {
                 String[] scanLine = scanner.nextLine().split("\\s+");
                 if (scanLine[0].contains("VmSize")) {
-                    vmSize = Long.valueOf(scanLine[scanLine.length -2]);
+                    vmSize = Long.valueOf(scanLine[scanLine.length - 2]);
                 }
             }
         } catch (FileNotFoundException e) {
@@ -158,6 +149,14 @@ public class MetricCollector {
         return process;
     }
 
+
+    /**
+     * Calculating network traffic to and from process using /proc/[pid]/net/dev
+     *  Skips first two lines of file (they contain header information to lay out
+     *    data in a table).
+     *  For each line after header information, adds 2rd value in line to accumulator
+     *    for bytes received, and adds the 10th value to bytes sent.
+     */
     public Process getNetDevMetrics(Process process, File netDevFile) {
         Scanner scanner = null;
 
@@ -165,7 +164,6 @@ public class MetricCollector {
             scanner = new Scanner(netDevFile);
             Long recBytes = 0L;
             Long sentBytes = 0L;
-            String currentLine;
 
             if (scanner.hasNextLine()) {
                 scanner.nextLine();
