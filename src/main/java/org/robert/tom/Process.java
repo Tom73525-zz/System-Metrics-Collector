@@ -2,10 +2,12 @@ package org.robert.tom;
 
 
 public class Process {
-  private int pid, ppid, numThreads;
+  private Integer pid, ppid, numThreads;
   private String name;
   private char state;
-  private long utime, stime, cutime, cstime, starttime, vmsize, bytesSent, bytesReceived;
+  private Long utime, stime, cutime, cstime, starttime, vmsize, bytesSent,
+          bytesReceived;
+  private Double cpuUsage;
 
   public int getPid(){
     return this.pid;
