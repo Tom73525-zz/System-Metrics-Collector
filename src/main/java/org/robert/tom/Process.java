@@ -33,6 +33,14 @@ public class Process {
     this.numThreads = inNumThreads;
   }
 
+  public char getState() {
+    return state;
+  }
+
+  public void setState(char state) {
+    this.state = state;
+  }
+
   public String getName(){
     return this.name;
   }
@@ -45,7 +53,7 @@ public class Process {
     return this.utime;
   }
 
-  public void setUtime(long inUtime){
+  public void setUtime(Long inUtime){
     this.utime = inUtime;
   }
 
@@ -53,7 +61,7 @@ public class Process {
     return this.stime;
   }
 
-  public void setStime(long inStime){
+  public void setStime(Long inStime){
     this.stime = inStime;
   }
 
@@ -69,7 +77,7 @@ public class Process {
     return this.cstime;
   }
 
-  public void setCstime(long inCstime){
+  public void setCstime(Long inCstime){
     this.cstime = inCstime;
   }
 
@@ -77,7 +85,7 @@ public class Process {
     return this.starttime;
   }
 
-  public void setStartTime(long inStartTime){
+  public void setStartTime(Long inStartTime){
     this.starttime = inStartTime;
   }
 
@@ -85,7 +93,7 @@ public class Process {
     return this.vmsize;
   }
 
-  public void setVmSize(long inVmSize){
+  public void setVmSize(Long inVmSize){
     this.vmsize = inVmSize;
   }
 
@@ -103,5 +111,28 @@ public class Process {
 
   public void setBytesReceived(long inBytesReceived){
     this.bytesReceived = inBytesReceived;
+  }
+
+  public double getCpuUsage() {
+    return cpuUsage;
+  }
+
+  public void setCpuUsage(Double cpuUsage) {
+    this.cpuUsage = cpuUsage;
+  }
+
+  public Object[] getProcessArray() {
+    return new Object[]{
+            this.pid,
+            this.name,
+            this.state,
+            this.ppid,
+            this.utime,
+            this.stime,
+            this.numThreads,
+            this.starttime,
+            this.vmsize,
+            this.bytesReceived,
+            this.bytesSent};
   }
 }
