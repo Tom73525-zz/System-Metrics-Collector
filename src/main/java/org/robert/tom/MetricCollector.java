@@ -6,6 +6,9 @@ import java.util.Scanner;
 
 public class MetricCollector {
 
+    // Contains an ArrayList of integers, representing the
+    //  set of Process ID's existing during the last round of
+    //  metric collections.
     private ArrayList<Integer> pidList;
 
     MetricCollector() {
@@ -16,6 +19,10 @@ public class MetricCollector {
         return this.pidList;
     }
 
+    /**
+     * Returns the current system uptime, gathered from /proc/uptime
+     * @return The current system uptime (in seconds since boot)
+     */
     public Double getSystemUptime() {
         File uptimeFile;
         Double uptime = null;
@@ -34,10 +41,18 @@ public class MetricCollector {
         return uptime;
     }
 
+    /**
+     * Looks through "/proc/" and returns the names of all objects found
+     *  which have names that only consist of digits and are directories.
+     *  This gives a listing of all currently running processes on the system.
+     * @throws IOException thrown if procfs is not found.  This is unlikely,
+     * but this check is still necessary.  The exception is to be handled by
+     * the caller in whichever manner is necessary.
+     */
     public void gatherCurrentPidList() throws IOException {
         File procDir;
         procDir = new File("/proc/");
-        
+
         // Clearing pidList
         this.pidList.clear();
 
@@ -58,7 +73,44 @@ public class MetricCollector {
         }
     }
 
-    public Process collectMetrics(Integer pid) {
+    /**
+     * This function completes all steps to gather metrics for all processes
+     * currently represented in the /proc/ psuedo-filesystem.  It first calls
+     * the gatherCurrentPidList function to populate the current list of
+     * running processes, then calls collectMetricsForPid for each process to generate
+     * an ArrayList of each currently running process.  This collection of processes
+     * is then returned to be handled by the caller.
+     *
+     * @return an ArrayList containing all currently running processes and metrics,
+     * null if an exception is caught
+     */
+    public ArrayList<Process> collectMetrics() {
+        ArrayList<Process> processArrayList = new ArrayList<Process>();
+        try {
+            this.gatherCurrentPidList();
+            for (Integer currentPid : this.pidList) {
+                processArrayList.add(collectMetricsForPid(currentPid));
+            }
+        } catch (Exception e) {
+            // Can be reached from gatherCurrentPidList
+            //  If current pidList cannot be collected,
+            //   return null for this round of collection,
+            //   as procfs cannot be reached.
+            e.printStackTrace();
+            return null;
+        }
+
+        return processArrayList;
+    }
+
+    /**
+     * Calls several functions to open and parse files in procfs.
+     *  First collects metrics from /proc/[pid]/stat
+     *  Then collects metrics from /proc/[pid]status
+     * @param pid The process ID for which to collect metrics
+     * @return A Process object with metrics for process with [pid]
+     */
+    public Process collectMetricsForPid(Integer pid) {
         Process process = new Process();
         File statFile = new File("/proc/" + pid.toString() + "/stat");
         File statusFile = new File("/proc/" + pid.toString() + "/status");
@@ -82,10 +134,10 @@ public class MetricCollector {
 
     /**
      * Retrieving metrics for process with [pid]
-     *   Scans 'stat' file within process directory,
-     *    splitting the file into separate String objects in an array.
-     *   Places values from array into 'process' based on position
-     *    within the line, as described in proc documentation.
+     * Scans 'stat' file within process directory,
+     * splitting the file into separate String objects in an array.
+     * Places values from array into 'process' based on position
+     * within the line, as described in proc documentation.
      */
     public Process getStatMetrics(Process process, File statFile) {
         Scanner scanner = null;
@@ -123,10 +175,10 @@ public class MetricCollector {
 
     /**
      * Retrieving VmSize from /proc/[pid]/status
-     *  Scans lines in the file until a line containing the string "VmSize"
-     *    is found.
-     *  Once found, the second to last token in the string (after splitting
-     *    the string using spaces as a delimiter) will be the desired value.
+     * Scans lines in the file until a line containing the string "VmSize"
+     * is found.
+     * Once found, the second to last token in the string (after splitting
+     * the string using spaces as a delimiter) will be the desired value.
      */
     public Process getStatusMetrics(Process process, File statusFile) {
         Scanner scanner = null;
@@ -155,10 +207,10 @@ public class MetricCollector {
 
     /**
      * Calculating network traffic to and from process using /proc/[pid]/net/dev
-     *  Skips first two lines of file (they contain header information to lay out
-     *    data in a table).
-     *  For each line after header information, adds 2rd value in line to accumulator
-     *    for bytes received, and adds the 10th value to bytes sent.
+     * Skips first two lines of file (they contain header information to lay out
+     * data in a table).
+     * For each line after header information, adds 2rd value in line to accumulator
+     * for bytes received, and adds the 10th value to bytes sent.
      */
     public Process getNetDevMetrics(Process process, File netDevFile) {
         Scanner scanner = null;
@@ -186,7 +238,6 @@ public class MetricCollector {
                 scanner.close();
             }
         }
-
 
         return process;
     }
