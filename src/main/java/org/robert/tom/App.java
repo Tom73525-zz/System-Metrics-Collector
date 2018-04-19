@@ -14,14 +14,14 @@ public class App {
     private static void launchGUI() {
         String[] columns = new String[]{
                 "pid", "name", "state", "ppid", "utime", "stime", "numThreads",
-                "startTime", "vmSize", "bytesReceived", "bytesSent"
+                "startTime", "vmSize", "timeStamp", "cpuUsage"
         };
 
         JFrame frame = new JFrame("Metrics Collection App");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         // Setting up Objects
-        final ArrayList<Process> procs = new ArrayList<Process>();
+        final ArrayList<MCAProcess> procs = new ArrayList<MCAProcess>();
         final MetricCollector mc = new MetricCollector();
 
         // Gathering metrics
@@ -42,7 +42,7 @@ public class App {
         table.setModel(tableModel);
 
         // Adding Proc Rows to table
-        for (Process currentProc : procs) {
+        for (MCAProcess currentProc : procs) {
             Object[] metricArray = currentProc.getProcessArray();
             tableModel.addRow(metricArray);
         }
@@ -62,7 +62,7 @@ public class App {
 
                     tableModel.setRowCount(0);
 
-                    for (Process proc : procs) {
+                    for (MCAProcess proc : procs) {
                         Object[] updateMetricArray = proc.getProcessArray();
                         tableModel.addRow(updateMetricArray);
                     }
