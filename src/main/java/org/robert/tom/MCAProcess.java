@@ -1,14 +1,14 @@
 package org.robert.tom;
 
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class MCAProcess {
     private Integer pid, ppid, numThreads;
     private String name;
     private char state;
     private Long utime, stime, cutime, cstime, starttime, vmsize;
-    private Date timeStamp;
+    private Timestamp timeStamp;
     private Double cpuUsage;
 
     public MCAProcess(){
@@ -123,11 +123,11 @@ public class MCAProcess {
         this.cpuUsage = cpuUsage;
     }
 
-    public Date getTimeStamp() {
+    public Timestamp getTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(Date timeStamp) {
+    public void setTimeStamp(Timestamp timeStamp) {
         this.timeStamp = timeStamp;
     }
 
