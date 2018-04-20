@@ -1,11 +1,7 @@
 package org.robert.tom;
 
-import com.sun.org.apache.regexp.internal.RE;
-
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class SQLAdapter {
 
@@ -144,7 +140,9 @@ public class SQLAdapter {
 
       int ppid = getParentPid(pid);
       String p_name = getProcessName(pid);
+
       ResultSet resultSet = statement.executeQuery(getLast5SecOld);
+
       while(resultSet.next()){
         MCAProcess mcaProcess = new MCAProcess();
         mcaProcess.setPid(pid);
@@ -162,6 +160,7 @@ public class SQLAdapter {
         mcaProcess.setCpuUsage(resultSet.getDouble(11));
         processes.add(mcaProcess);
       }
+      resultSet.close();
     }catch (Exception e){
       e.printStackTrace();
     }
