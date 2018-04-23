@@ -32,7 +32,7 @@
         <version>1.7</version>
         <executions>
           <execution>
-            <phase>mcaprocess-classes</phase>
+            <phase>process-classes</phase>
             <configuration>
               <target
                 name="jni"
