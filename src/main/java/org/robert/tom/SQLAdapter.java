@@ -59,7 +59,7 @@ public class SQLAdapter {
    */
   protected boolean saveProcessMetrics(ArrayList<MCAProcess> mcaProcesses){
 
-    int count = 1;
+    int count = 0;
     MetricCollector metricCollector = new MetricCollector();
     Double uptime = metricCollector.getSystemUptime();
     for (MCAProcess mcaProcess : mcaProcesses) {
