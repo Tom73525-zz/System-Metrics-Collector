@@ -14,22 +14,19 @@ public class AppTest {
 
     @Test
     public void metricRetrievalTest(){
-        Process testProc = new Process();
+        MCAProcess testProc = new MCAProcess();
         MetricCollector testCollector = new MetricCollector();
 
         URL statUrl = this.getClass().getResource("/testStat");
         URL statusUrl = this.getClass().getResource("/testStatus");
-        URL netDevUrl = this.getClass().getResource("/testNetDev");
 
         System.out.println(statUrl.getFile());
 
         File testStatFile = new File(statUrl.getFile());
         File testStatusFile = new File(statusUrl.getFile());
-        File testNetDevFile = new File(netDevUrl.getFile());
 
         testProc = testCollector.getStatMetrics(testProc, testStatFile);
         testProc = testCollector.getStatusMetrics(testProc, testStatusFile);
-        testProc = testCollector.getNetDevMetrics(testProc, testNetDevFile);
 
         assertEquals(371, testProc.getPid());
         assertEquals("ips-monitor", testProc.getName());
@@ -42,7 +39,5 @@ public class AppTest {
         assertEquals(1, testProc.getNumThreads());
         assertEquals(1289, testProc.getStartTime());
         assertEquals(0, testProc.getVmSize());
-        assertEquals(3145786, testProc.getBytesSent());
-        assertEquals(22216168, testProc.getBytesReceived());
     }
 }

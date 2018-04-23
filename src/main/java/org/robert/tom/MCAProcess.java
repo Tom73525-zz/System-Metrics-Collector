@@ -1,12 +1,31 @@
 package org.robert.tom;
 
 
-public class Process {
+import java.sql.Timestamp;
+
+public class MCAProcess {
     private Integer pid, ppid, numThreads;
     private String name;
     private char state;
-    private Long utime, stime, cutime, cstime, starttime, vmsize, bytesSent, bytesReceived;
+    private Long utime, stime, cutime, cstime, starttime, vmsize;
+    private Timestamp timeStamp;
     private Double cpuUsage;
+
+    public MCAProcess(){
+        this.pid = 0;
+        this.ppid = 0;
+        this.numThreads = 0;
+        this.name = "";
+        this.state = ' ';
+        this.utime = 0L;
+        this.stime = 0L;
+        this.cutime = 0L;
+        this.cstime = 0L;
+        this.starttime = 0L;
+        this.vmsize = 0L;
+        this.timeStamp = null;
+        this.cpuUsage = 0.0;
+    }
 
     public int getPid() {
         return this.pid;
@@ -96,28 +115,20 @@ public class Process {
         this.vmsize = inVmSize;
     }
 
-    public long getBytesSent() {
-        return this.bytesSent;
-    }
-
-    public void setBytesSent(Long inBytesSent) {
-        this.bytesSent = inBytesSent;
-    }
-
-    public long getBytesReceived() {
-        return this.bytesReceived;
-    }
-
-    public void setBytesReceived(Long inBytesReceived) {
-        this.bytesReceived = inBytesReceived;
-    }
-
     public double getCpuUsage() {
         return cpuUsage;
     }
 
     public void setCpuUsage(Double cpuUsage) {
         this.cpuUsage = cpuUsage;
+    }
+
+    public Timestamp getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(Timestamp timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     public Object[] getProcessArray() {
@@ -131,8 +142,8 @@ public class Process {
                 this.numThreads,
                 this.starttime,
                 this.vmsize,
-                this.bytesReceived,
-                this.bytesSent
+                this.timeStamp,
+                this.cpuUsage
         };
     }
 }
