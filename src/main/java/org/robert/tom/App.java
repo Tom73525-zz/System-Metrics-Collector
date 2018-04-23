@@ -11,102 +11,25 @@ import java.util.ArrayList;
 
 public class App {
 
-    private static void launchGUI() {
-        String[] columns = new String[]{
-                "pid", "name", "state", "ppid", "utime", "stime", "numThreads",
-                "startTime", "vmSize", "timeStamp", "cpuUsage"
-        };
+    private static native long getSystemClockInTicks();
 
-        JFrame frame = new JFrame("Metrics Collection App");
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        // Setting up Objects
-        final ArrayList<MCAProcess> procs = new ArrayList<MCAProcess>();
-        final MetricCollector mc = new MetricCollector();
-
-        // Gathering metrics
-        try {
-            mc.gatherCurrentPidList();
-            for (Integer currentPid : mc.getPidList()) {
-                procs.add(mc.collectMetricsForPid(currentPid));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        // TABLE SETUP
-        final JTable table = new JTable();
-        final DefaultTableModel tableModel = new DefaultTableModel(0, 0);
-        tableModel.setColumnIdentifiers(columns);
-        table.setModel(tableModel);
-
-        // Adding Proc Rows to table
-        for (MCAProcess currentProc : procs) {
-            Object[] metricArray = currentProc.getProcessArray();
-            tableModel.addRow(metricArray);
-        }
-
-
-        // BUTTON SETUP
-        JButton updateButton = new JButton("Refresh");
-        updateButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                procs.clear();
-
-                try {
-                    mc.gatherCurrentPidList();
-                    for (Integer currentPid : mc.getPidList()) {
-                        procs.add(mc.collectMetricsForPid(currentPid));
-                    }
-
-                    tableModel.setRowCount(0);
-
-                    for (MCAProcess proc : procs) {
-                        Object[] updateMetricArray = proc.getProcessArray();
-                        tableModel.addRow(updateMetricArray);
-                    }
-
-                    tableModel.fireTableDataChanged();
-
-                } catch (IOException updateExeption) {
-                    updateExeption.printStackTrace();
-                }
-            }
-        });
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        JPanel metricsContainer = new JPanel(new GridBagLayout());
-        frame.getContentPane().add(metricsContainer);
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        gbc.gridheight = 2;
-        gbc.fill = GridBagConstraints.BOTH;
-        metricsContainer.add(updateButton, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.weightx = 8;
-        gbc.weighty = 8;
-        gbc.gridheight = 8;
-        gbc.fill = GridBagConstraints.BOTH;
-        JScrollPane scrollPane = new JScrollPane(table);
-        metricsContainer.add(scrollPane, gbc);
-
-        frame.pack();
-        frame.setSize(960, 720);
-        frame.setVisible(true);
+    static {
+        System.loadLibrary("mcollect");
     }
 
     public static void main(String[] args) {
         System.out.println("Loading interface...");
 
+        System.out.println(getSystemClockInTicks());
+
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                launchGUI();
+                //launchGUI();
+                MetricFrame metricView = new MetricFrame("Metric Collection App");
+                metricView.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                metricView.pack();
+                metricView.setSize(960,720);
+                metricView.setVisible(true);
             }
         });
     }

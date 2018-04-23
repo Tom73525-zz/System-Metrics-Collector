@@ -7,6 +7,14 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+/*
+ * Class:     org_robert_tom_App
+ * Method:    getSystemClockInTicks
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_org_robert_tom_App_getSystemClockInTicks
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif

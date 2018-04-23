@@ -66,6 +66,9 @@
             <addClasspath>true</addClasspath>
             <mainClass>org.robert.tom.App</mainClass>
           </manifest>
+          <manifestEntries>
+            <Class-Path>./</Class-Path>
+          </manifestEntries>
         </archive>
       </configuration>
       </plugin>
