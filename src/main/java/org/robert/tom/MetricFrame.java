@@ -130,7 +130,6 @@ public class MetricFrame extends JFrame {
                 ArrayList<Object> tableColumnHeaders = new ArrayList<Object>();
                 for(int currentIndex: currentFilterList) {
                     tableColumnHeaders.add(event.filterList[currentIndex]);
-                    System.out.println(currentIndex);
                 }
 
                 // sets Column Identifiers in tableModel to retrieved headers from FilterEvent

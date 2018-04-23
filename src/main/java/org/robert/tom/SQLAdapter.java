@@ -59,7 +59,7 @@ public class SQLAdapter {
    */
   protected boolean saveProcessMetrics(ArrayList<MCAProcess> mcaProcesses){
 
-    int count = 1;
+    int count = 0;
     MetricCollector metricCollector = new MetricCollector();
     Double uptime = metricCollector.getSystemUptime();
     for (MCAProcess mcaProcess : mcaProcesses) {
@@ -74,7 +74,7 @@ public class SQLAdapter {
       long p_stime = mcaProcess.getStime();
       long p_utime = mcaProcess.getUtime();
       long p_startTime = mcaProcess.getStartTime();
-     //double p_cpu_utilization = getCPUUsage(mcaProcess,uptime,
+      //double p_cpu_utilization = getCPUUsage(mcaProcess,uptime,
       // metricCollector.getClkTksPerSecond());
 
       // This is just a dummy input for uptime and clock_ticks
@@ -141,7 +141,7 @@ public class SQLAdapter {
     System.out.println(sqlAdapter.getProcessLast5SecOlder(1121).get
             (sqlAdapter.getProcessLast5SecOlder(1121).size() - 1)
             .getCpuUsage());
-    
+
   }
 
   /**

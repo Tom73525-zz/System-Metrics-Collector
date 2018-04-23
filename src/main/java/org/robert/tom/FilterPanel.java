@@ -90,11 +90,9 @@ public class FilterPanel extends JPanel {
                 if(pluralityBG.getSelection().getActionCommand() == "pid") {
                     filterPid = Integer.valueOf(pidTextField.getText());
                 }
-                System.out.println(filterPid);
 
                 // Set filter class
                 int filterClass = Integer.valueOf(filterGroupBG.getSelection().getActionCommand());
-                System.out.println(filterClass);
 
                 FilterEvent newFilterEvent = new FilterEvent(this, false, filterPid, filterClass);
 
