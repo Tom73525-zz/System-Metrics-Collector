@@ -10,6 +10,9 @@ public class JDBC_Connectivity_Test {
 
   Connection connection = null;
 
+  /**
+   * This method tests for the JDBC connectivity.
+   */
   @Test
   public void testConnectiom(){
     try {
