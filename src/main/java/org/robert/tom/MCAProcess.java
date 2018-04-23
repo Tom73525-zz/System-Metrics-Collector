@@ -85,7 +85,7 @@ public class MCAProcess {
 
     public long getCutime() {
         return this.cutime;
-    }
+    }bytesSent
 
     public void setCutime(Long inCutime) {
         this.cutime = inCutime;
