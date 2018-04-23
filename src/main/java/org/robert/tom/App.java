@@ -20,7 +20,7 @@ public class App {
     public static void main(String[] args) {
         System.out.println("Loading interface...");
 
-        System.out.println(getSystemClockInTicks());
+        System.out.println("System Clock ticks/second: " + getSystemClockInTicks());
 
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {

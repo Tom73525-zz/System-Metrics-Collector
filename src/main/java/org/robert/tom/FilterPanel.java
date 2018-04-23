@@ -33,7 +33,7 @@ public class FilterPanel extends JPanel {
 
         // Setting up panel dimensions, which should remain constant as window is resized
         Dimension size = getPreferredSize();
-        size.width = 250;
+        size.width = 300;
         setPreferredSize(size);
 
         // Creates border around control panel to separate controls from main table
@@ -108,16 +108,21 @@ public class FilterPanel extends JPanel {
         gbc.gridy = 0;
         gbc.weightx = 0.5;
         gbc.weighty = 0.5;
+        gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(pidTextField, gbc);
 
         gbc.anchor = GridBagConstraints.LINE_END;
         gbc.gridx = 1;
         gbc.gridy = 0;
+        gbc.weightx = 0.5;
+        gbc.weighty = 0.5;
         add(singleProcessRadio, gbc);
 
         gbc.gridx = 2;
         gbc.gridy = 0;
+        gbc.weightx = 0.5;
+        gbc.weighty = 0.5;
         add(allProcessRadio, gbc);
 
         //// Filter Group Radio Buttons ////
@@ -151,7 +156,7 @@ public class FilterPanel extends JPanel {
             public void run() {
                 // Setup pidFilter selection, -1 for all processes, positive int for single
                 int filterPid = -1;
-                if(pluralityBG.getSelection().getActionCommand() == "pid") {
+                if(pluralityBG.getSelection().getActionCommand().equals("pid")) {
                     filterPid = Integer.valueOf(pidTextField.getText());
                 }
                 //System.out.println("Filter PID: " + filterPid);

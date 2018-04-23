@@ -17,7 +17,7 @@ public class MetricFrame extends JFrame {
     // JPanel extension to house filter controls
     private FilterPanel filters;
 
-    private final SQLAdapter dbAdapter;
+    private SQLAdapter dbAdapter;
 
     /**
      * Constructor for main application window, sets title with super(String)
@@ -116,15 +116,29 @@ public class MetricFrame extends JFrame {
                     try {
                         filterMc.gatherCurrentPidList();
                         tableProcesses = filterMc.collectMetrics();
-                        //System.out.println("Collecting new metrics");
+                        // dbAdapter = new SQLAdapter();
+                        //boolean storedMetrics = dbAdapter.saveProcessMetrics(tableProcesses);
+                        //System.out.println(storedMetrics);
                     } catch (Exception e) {
                         // MOVE THIS TO FUNCTION CALL, RETURN NULL TO PROMPT NEW GATHERING ATTEMPT
                         e.printStackTrace();
                     }
-                } else {
-                    // Pull from database here
-
                 }
+
+                // FOR TESTING PURPOSES: TO BE REMOVED ~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+
+                // Populating for single pid
+                MetricCollector filterMc = new MetricCollector();
+                try {
+                    filterMc.gatherCurrentPidList();
+                    tableProcesses = filterMc.collectMetrics();
+                    // dbAdapter = new SQLAdapter();
+                    //boolean storedMetrics = dbAdapter.saveProcessMetrics(tableProcesses);
+                    //System.out.println(storedMetrics);
+                } catch (Exception e) {
+                    // MOVE THIS TO FUNCTION CALL, RETURN NULL TO PROMPT NEW GATHERING ATTEMPT
+                    e.printStackTrace();
+                }
+                // FOR TESTING PURPOSES: TO BE REMOVED ~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+
 
                 int[] currentFilterList = event.filterGroups[event.getFilterType()];
                 ArrayList<Object> tableColumnHeaders = new ArrayList<Object>();
@@ -135,7 +149,19 @@ public class MetricFrame extends JFrame {
                 // sets Column Identifiers in tableModel to retrieved headers from FilterEvent
                 tableModel.setColumnIdentifiers(tableColumnHeaders.toArray());
                 metricsTable.setModel(tableModel);
+                // Clear Table
                 tableModel.setNumRows(0);
+
+
+
+                // Database Calls here
+//                if(event.getFilterPid() > 0) {
+//                    tableProcesses = dbAdapter.getMaxStartTime(event.getFilterPid());
+//                } else {
+//                    tableProcesses = dbAdapter.getProcessLast5SecOlder();
+//                }
+
+                // Update tableModel with current set of filtered rows
                 for(MCAProcess currentProc: tableProcesses){
                     Object[] currentProcArray = currentProc.getProcessArray();
                     ArrayList<Object> newRow = new ArrayList<Object>();
@@ -144,17 +170,9 @@ public class MetricFrame extends JFrame {
                     }
                     tableModel.addRow(newRow.toArray());
                 }
+
+                // Update table contents
                 tableModel.fireTableDataChanged();
-
-
-                // for (ArrayList<> currentProc: DBProcesses) {
-                //      Object[] curProcArray
-                //      ArrayList<Object> newRow = new ArrayList<>
-                //      for(int currentIndex: currentFilterList){
-                //          newRow.add(curProcArray[currentIndex])
-                //      }
-                //      table.addRow(currentProc)
-                //  }
             }
         }); // filters.addFilterListener
 
