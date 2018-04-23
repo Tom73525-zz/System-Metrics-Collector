@@ -45,11 +45,12 @@ public class FilterPanel extends JPanel {
         NumberFormat format = NumberFormat.getIntegerInstance();
         NumberFormatter formatter = new NumberFormatter(format);
         formatter.setValueClass(Integer.class);
-        formatter.setMinimum(0);
+        formatter.setMinimum(1);
         formatter.setMaximum(32768);
         formatter.setAllowsInvalid(false);
         format.setGroupingUsed(false);
         final JFormattedTextField pidTextField = new JFormattedTextField(formatter);
+        pidTextField.setValue(1);
 
         // Plurality Button Group
         final JRadioButton singleProcessRadio = new JRadioButton("Single Process");
