@@ -2,9 +2,11 @@ package org.robert.tom;
 
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
+import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -37,26 +39,37 @@ public class FilterPanel extends JPanel {
         // Creates border around control panel to separate controls from main table
         setBorder(BorderFactory.createTitledBorder("Filter Options"));
 
-        // Creating Components for Controls
-        JTextField nameField = new JTextField(10);
-        JTextField occupationField = new JTextField(10);
 
-        // Creating Components for Controls (REAL)
+        // Creating Components for Controls
+        // Creating int-only text field
+        NumberFormat format = NumberFormat.getIntegerInstance();
+        NumberFormatter formatter = new NumberFormatter(format);
+        formatter.setValueClass(Integer.class);
+        formatter.setMinimum(0);
+        formatter.setMaximum(32768);
+        formatter.setAllowsInvalid(false);
+        format.setGroupingUsed(false);
+        final JFormattedTextField pidTextField = new JFormattedTextField(formatter);
+
         // Plurality Button Group
-        JRadioButton singleProcessRadio = new JRadioButton("Single Process");
+        final JRadioButton singleProcessRadio = new JRadioButton("Single Process");
+        singleProcessRadio.setActionCommand("pid");
         JRadioButton allProcessRadio = new JRadioButton("All Processes");
-        ButtonGroup pluralityBG = new ButtonGroup();
+        allProcessRadio.setActionCommand("all");
+        allProcessRadio.setSelected(true);
+        final ButtonGroup pluralityBG = new ButtonGroup();
         pluralityBG.add(singleProcessRadio);
         pluralityBG.add(allProcessRadio);
 
         // Filter Group Button Group
         JRadioButton basicInfoRadio = new JRadioButton("Basic Information");
         basicInfoRadio.setActionCommand("0");
+        basicInfoRadio.setSelected(true);
         JRadioButton resourcesRadio = new JRadioButton("Resources");
         resourcesRadio.setActionCommand("1");
         JRadioButton cpuInfoRadio = new JRadioButton("CPU Information");
         cpuInfoRadio.setActionCommand("2");
-        ButtonGroup filterGroupBG = new ButtonGroup();
+        final ButtonGroup filterGroupBG = new ButtonGroup();
         filterGroupBG.add(basicInfoRadio);
         filterGroupBG.add(resourcesRadio);
         filterGroupBG.add(cpuInfoRadio);
@@ -71,8 +84,20 @@ public class FilterPanel extends JPanel {
         JButton filterButton = new JButton("Filter");
         filterButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // FilterEvent scheduledEvent = new FilterEvent(this, true, GET pidRadio, GET filterClass);
-                //fireFilterEvent(scheduledEvent);
+                // Setup pidFilter selection, -1 for all processes, positive int for single
+                int filterPid = -1;
+                if(pluralityBG.getSelection().getActionCommand() == "pid") {
+                    filterPid = Integer.valueOf(pidTextField.getText());
+                }
+                System.out.println(filterPid);
+
+                // Set filter class
+                int filterClass = Integer.valueOf(filterGroupBG.getSelection().getActionCommand());
+                System.out.println(filterClass);
+
+                FilterEvent newFilterEvent = new FilterEvent(this, false, filterPid, filterClass);
+
+                fireFilterEvent(newFilterEvent);
             }
         });
 
@@ -80,14 +105,19 @@ public class FilterPanel extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
 
         //// Plurality Radio Buttons ////
-        gbc.anchor = GridBagConstraints.LINE_END;
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 0.5;
         gbc.weighty = 0.5;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        add(pidTextField, gbc);
+
+        gbc.anchor = GridBagConstraints.LINE_END;
+        gbc.gridx = 1;
+        gbc.gridy = 0;
         add(singleProcessRadio, gbc);
 
-        gbc.gridx = 1;
+        gbc.gridx = 2;
         gbc.gridy = 0;
         add(allProcessRadio, gbc);
 
@@ -120,8 +150,20 @@ public class FilterPanel extends JPanel {
         // Scheduled metric collection, runs every 5 seconds
         Runnable periodicMetricCollection = new Runnable() {
             public void run() {
-                // FilterEvent scheduledEvent = new FilterEvent(this, true, GET pidRadio, GET filterClass);
-                //fireFilterEvent(scheduledEvent);
+                // Setup pidFilter selection, -1 for all processes, positive int for single
+                int filterPid = -1;
+                if(pluralityBG.getSelection().getActionCommand() == "pid") {
+                    filterPid = Integer.valueOf(pidTextField.getText());
+                }
+                //System.out.println("Filter PID: " + filterPid);
+
+                // Set filter class
+                int filterClass = Integer.valueOf(filterGroupBG.getSelection().getActionCommand());
+                //System.out.println("Filter Class: " + filterClass);
+
+                FilterEvent newFilterEvent = new FilterEvent(this, true, filterPid, filterClass);
+
+                fireFilterEvent(newFilterEvent);
             }
         };
         ScheduledExecutorService metricCollectionScheduler = Executors.newScheduledThreadPool(1);

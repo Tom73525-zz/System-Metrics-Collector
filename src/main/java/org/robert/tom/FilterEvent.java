@@ -33,7 +33,7 @@ public class FilterEvent extends EventObject {
     // Contains indexes of
     public final static int[][] filterGroups = {
             {0, 1, 2, 3, 7},            // Basic Info
-            {1, 2, 9, 8, 10},           // Resources
+            {0, 1, 9, 8, 10},           // Resources
             {0, 1, 9, 10, 4, 5, 6}};    // CPU Info
 
     // List of Columns Headers to build table

@@ -111,33 +111,42 @@ public class MetricFrame extends JFrame {
                 ArrayList<MCAProcess> tableProcesses = new ArrayList<MCAProcess>();
 
                 if(event.isNewFlag()){
-                    // Metric Collection here
+                    // Add to DB here
                     MetricCollector filterMc = new MetricCollector();
                     try {
                         filterMc.gatherCurrentPidList();
                         tableProcesses = filterMc.collectMetrics();
+                        //System.out.println("Collecting new metrics");
                     } catch (Exception e) {
                         // MOVE THIS TO FUNCTION CALL, RETURN NULL TO PROMPT NEW GATHERING ATTEMPT
                         e.printStackTrace();
                     }
                 } else {
-                    //tableProcesses = dbAdapter.
+                    // Pull from database here
+
                 }
 
                 int[] currentFilterList = event.filterGroups[event.getFilterType()];
                 ArrayList<Object> tableColumnHeaders = new ArrayList<Object>();
                 for(int currentIndex: currentFilterList) {
                     tableColumnHeaders.add(event.filterList[currentIndex]);
+                    System.out.println(currentIndex);
                 }
 
                 // sets Column Identifiers in tableModel to retrieved headers from FilterEvent
                 tableModel.setColumnIdentifiers(tableColumnHeaders.toArray());
                 metricsTable.setModel(tableModel);
-
-                // Get metrics from DB
-                if(!event.isNewFlag()) {
-                    //
+                tableModel.setNumRows(0);
+                for(MCAProcess currentProc: tableProcesses){
+                    Object[] currentProcArray = currentProc.getProcessArray();
+                    ArrayList<Object> newRow = new ArrayList<Object>();
+                    for(int currentIndex: currentFilterList){
+                        newRow.add(currentProcArray[currentIndex]);
+                    }
+                    tableModel.addRow(newRow.toArray());
                 }
+                tableModel.fireTableDataChanged();
+
 
                 // for (ArrayList<> currentProc: DBProcesses) {
                 //      Object[] curProcArray
