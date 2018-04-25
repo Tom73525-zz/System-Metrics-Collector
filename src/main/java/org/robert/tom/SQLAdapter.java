@@ -46,7 +46,7 @@ public class SQLAdapter {
       preparedStatement2.execute();
 
       preparedStatement1.close();
-      preparedStatement2.close();;
+      preparedStatement2.close();
     } catch (Exception e) {
     }
   }
@@ -330,7 +330,7 @@ public class SQLAdapter {
             "WHERE p_starttime = " +
             "(SELECT MAX(p_starttime) " +
             "FROM METRICS " +
-            "WHERE pid = " + pid;
+            "WHERE pid = " + pid + ");";
     try {
 
       PreparedStatement preparedStatement = connection
@@ -356,7 +356,6 @@ public class SQLAdapter {
         mcaProcess.setCpuUsage(resultSet.getDouble(11));
         mcaProcesses.add(mcaProcess);
       }
-      System.out.println(mcaProcesses.size());
       preparedStatement.close();
       resultSet.close();
 
