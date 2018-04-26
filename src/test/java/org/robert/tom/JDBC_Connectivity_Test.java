@@ -17,10 +17,7 @@ public class JDBC_Connectivity_Test {
   public void testConnectiom(){
     try {
       SQLAdapter sqlAdapter = new SQLAdapter();
-      Class.forName("org.sqlite.JDBC");
-      connection = DriverManager.getConnection
-              ("jdbc:sqlite:ProcessMetrics.db");
-
+      connection = sqlAdapter.openDbConnection();
       assertEquals(connection.isClosed(),false);
     }catch (Exception e){
       e.printStackTrace();
