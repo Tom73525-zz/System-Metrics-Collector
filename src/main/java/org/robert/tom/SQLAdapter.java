@@ -241,7 +241,8 @@ public class SQLAdapter {
         mcaProcess.setPid(pid);
         mcaProcess.setPpid(ppid);
         mcaProcess.setName(p_name);
-        mcaProcess.setTimeStamp(resultSet.getTimestamp(2));
+        mcaProcess.setTimeStamp(Timestamp.valueOf(resultSet
+                .getString(2)));
         mcaProcess.setVmSize(resultSet.getLong(3));
         mcaProcess.setState((resultSet.getString(4).charAt(0)));
         mcaProcess.setNumThreads(resultSet.getInt(5));
@@ -344,7 +345,8 @@ public class SQLAdapter {
         mcaProcess.setPid(pid);
         mcaProcess.setPpid(ppid);
         mcaProcess.setName(p_name);
-        mcaProcess.setTimeStamp(resultSet.getTimestamp(2));
+        mcaProcess.setTimeStamp(Timestamp.valueOf(resultSet
+                .getString(2)));
         mcaProcess.setVmSize(resultSet.getLong(3));
         mcaProcess.setState((resultSet.getString(4).charAt(0)));
         mcaProcess.setNumThreads(resultSet.getInt(5));
