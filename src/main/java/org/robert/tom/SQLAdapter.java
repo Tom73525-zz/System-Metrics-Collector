@@ -1,6 +1,7 @@
 package org.robert.tom;
 
 import java.sql.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class SQLAdapter {
@@ -113,7 +114,7 @@ public class SQLAdapter {
       // metricCollector.getClkTksPerSecond());
 
       // This is just a dummy input for uptime and clock_ticks
-      double p_cpu_utilization = getCPUUsage(mcaProcess,
+      double p_cpu_utilization = getCpuUsage(mcaProcess,
               240000.0,100);
 
       try {
@@ -302,7 +303,7 @@ public class SQLAdapter {
    * @param clk_ticks_per_second - System clock ticks per second
    * @return Returns the percentile CPU usage.
    */
-  public Double getCPUUsage(MCAProcess mcaProcess, Double uptime,
+  public Double getCpuUsage(MCAProcess mcaProcess, Double uptime,
                             long clk_ticks_per_second){
 
     double total_time = mcaProcess.getUtime() + mcaProcess.getStime() +
@@ -313,7 +314,9 @@ public class SQLAdapter {
 
     double cpu_usage = 100 * ((total_time / clk_ticks_per_second) / seconds);
 
-    return new Double(cpu_usage);
+    DecimalFormat df = new DecimalFormat("###.##");
+
+    return Double.parseDouble(df.format(cpu_usage));
   }
 
   /**

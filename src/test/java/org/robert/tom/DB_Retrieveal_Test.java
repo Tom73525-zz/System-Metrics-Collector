@@ -43,7 +43,6 @@ public class DB_Retrieveal_Test {
 
       ArrayList<MCAProcess> mcaProcesses2 = sqlAdapter
               .getProcessLast5SecOlder(connection);
-
       assertEquals(true,mcaProcesses2.size() > 0);
     }catch(Exception e){
 
