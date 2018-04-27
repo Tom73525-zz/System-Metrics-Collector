@@ -9,7 +9,7 @@ import org.junit.runners.Suite;
         JDBC_Connectivity_Test.class,
         DB_Retrieveal_Test.class,
         getMaxStartTime_Test.class,
-        deleteProcessTest.class,
+        deleteProcess_Test.class,
         getLatestTime_Test.class
 })
 public class TestSuite {
