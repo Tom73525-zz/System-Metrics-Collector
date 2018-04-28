@@ -7,20 +7,20 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
-public class DB_Population_Test {
-
+public class deleteProcess_Test {
   Connection connection = null;
+
   /**
-   * This method tests for the population of the database
+   * This method populates into the database and checks if the data is
+   * successfully deleted
+   * from the database.
    */
   @Test
-  public void testDB(){
+  public void delete_mcaprocess(){
 
     SQLAdapter sqlAdapter = new SQLAdapter();
     try {
       connection = sqlAdapter.openDbConnection();
-
-
       ArrayList<MCAProcess> mcaProcesses = new ArrayList<MCAProcess>();
       MCAProcess mcaProcess = new MCAProcess();
       mcaProcess.setCpuUsage(12.3);
@@ -34,11 +34,11 @@ public class DB_Population_Test {
       mcaProcess.setVmSize(432L);
       mcaProcess.setName("abc");
       mcaProcess.setPpid(44);
-      mcaProcess.setPid(10);
+      mcaProcess.setPid(1221);
       mcaProcesses.add(mcaProcess);
-      boolean isMetricsSaved = sqlAdapter.saveProcessMetrics(mcaProcesses, connection);
-      assertEquals(isMetricsSaved ,true);
-    }catch(Exception e){
+      sqlAdapter.saveProcessMetrics(mcaProcesses, connection);
+      assertEquals(true, sqlAdapter.deleteProcess(1221,connection));
+    }catch (Exception e){
 
     }
 

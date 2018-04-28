@@ -7,24 +7,24 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
-public class DB_Population_Test {
+public class DB_Retrieveal_Test {
 
   Connection connection = null;
+
   /**
-   * This method tests for the population of the database
+   * This method checks if the data is successfully retrieved from  the
+   * database.
    */
   @Test
-  public void testDB(){
-
+  public void testDbRetrieval(){
     SQLAdapter sqlAdapter = new SQLAdapter();
     try {
       connection = sqlAdapter.openDbConnection();
 
-
-      ArrayList<MCAProcess> mcaProcesses = new ArrayList<MCAProcess>();
+      ArrayList<MCAProcess> mcaProcesses1 = new ArrayList<MCAProcess>();
       MCAProcess mcaProcess = new MCAProcess();
       mcaProcess.setCpuUsage(12.3);
-      mcaProcess.setStartTime(1214L);
+      mcaProcess.setStartTime(12165553L);
       mcaProcess.setUtime(43L);
       mcaProcess.setStime(22L);
       mcaProcess.setCutime(2L);
@@ -34,13 +34,20 @@ public class DB_Population_Test {
       mcaProcess.setVmSize(432L);
       mcaProcess.setName("abc");
       mcaProcess.setPpid(44);
-      mcaProcess.setPid(10);
-      mcaProcesses.add(mcaProcess);
-      boolean isMetricsSaved = sqlAdapter.saveProcessMetrics(mcaProcesses, connection);
-      assertEquals(isMetricsSaved ,true);
+      mcaProcess.setPid(2122);
+
+      mcaProcesses1.add(mcaProcess);
+
+      sqlAdapter.saveProcessMetrics(mcaProcesses1,
+              connection);
+
+      ArrayList<MCAProcess> mcaProcesses2 = sqlAdapter
+              .getProcessLast5SecOlder(connection);
+      assertEquals(true,mcaProcesses2.size() > 0);
     }catch(Exception e){
 
     }
+
 
   }
 }
