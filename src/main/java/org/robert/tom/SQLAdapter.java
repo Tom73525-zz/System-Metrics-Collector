@@ -4,8 +4,12 @@ import java.sql.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+/**
+ * This class implements the management behaviors to put data in and out of
+ * the SQLite database. The specific usage of this class can be found in the
+ * test cases.
+ */
 public class SQLAdapter {
-
 
   /**
    * The SQLiteAdapter constructor establishes a connection to an existing
