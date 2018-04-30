@@ -7,3 +7,6 @@ target/
 
 #Ignore Mac_os filesystem
 .DS_Store
+
+#Ignore .db
+*.db

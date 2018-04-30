@@ -89,13 +89,13 @@ public class MetricCollector {
         try {
             this.gatherCurrentPidList();
             for (Integer currentPid : this.pidList) {
-                mcaProcessArrayList.add(collectMetricsForPid(currentPid));
+                MCAProcess tempProc = collectMetricsForPid(currentPid);
+                if(tempProc != null){
+                    mcaProcessArrayList.add(tempProc);
+                }
             }
         } catch (Exception e) {
-            // Can be reached from gatherCurrentPidList
-            //  If current pidList cannot be collected,
-            //   return null for this round of collection,
-            //   as procfs cannot be reached.
+            System.out.println("MetricCollector.collectMetrics() : ERROR IN METRIC COLLECTION");
             e.printStackTrace();
             return null;
         }
@@ -116,13 +116,16 @@ public class MetricCollector {
         File statusFile = new File("/proc/" + pid.toString() + "/status");
 
 
-        // StatFile HERE
-        mcaprocess = getStatMetrics(mcaprocess, statFile);
+        try {
+            // StatFile collection
+            mcaprocess = getStatMetrics(mcaprocess, statFile);
 
-
-        // STATUSFILE HERE
-        mcaprocess = getStatusMetrics(mcaprocess, statusFile);
-
+            // StatusFile collection
+            mcaprocess = getStatusMetrics(mcaprocess, statusFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
 
         return mcaprocess;
     }
@@ -134,6 +137,10 @@ public class MetricCollector {
      * splitting the file into separate String objects in an array.
      * Places values from array into 'mcaProcess' based on position
      * within the line, as described in proc documentation.
+     *
+     * @param mcaProcess MCAProcess being built up
+     * @param statFile File being read, namely /proc/[pid]/stat
+     * @return The process with populated fields
      */
     public MCAProcess getStatMetrics(MCAProcess mcaProcess, File statFile) {
         Scanner scanner = null;
@@ -175,6 +182,9 @@ public class MetricCollector {
      * is found.
      * Once found, the second to last token in the string (after splitting
      * the string using spaces as a delimiter) will be the desired value.
+     * @param mcaProcess
+     * @param statusFile
+     * @return
      */
     public MCAProcess getStatusMetrics(MCAProcess mcaProcess, File statusFile) {
         Scanner scanner = null;
