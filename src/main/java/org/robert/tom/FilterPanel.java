@@ -87,7 +87,7 @@ public class FilterPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 // Setup pidFilter selection, -1 for all processes, positive int for single
                 int filterPid = -1;
-                if(pluralityBG.getSelection().getActionCommand() == "pid") {
+                if (pluralityBG.getSelection().getActionCommand() == "pid") {
                     filterPid = Integer.valueOf(pidTextField.getText());
                 }
 
@@ -106,44 +106,47 @@ public class FilterPanel extends JPanel {
         //// Plurality Radio Buttons ////
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx = 0.5;
-        gbc.weighty = 0.5;
+        gbc.weightx = 0.2;
+        gbc.weighty = 0.25;
         gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(pidTextField, gbc);
 
-        gbc.anchor = GridBagConstraints.LINE_END;
+        //gbc.anchor = GridBagConstraints.LINE_END;
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.weightx = 0.5;
-        gbc.weighty = 0.5;
+        gbc.weightx = 0.4;
+        gbc.weighty = 0.25;
         add(singleProcessRadio, gbc);
 
         gbc.gridx = 2;
         gbc.gridy = 0;
-        gbc.weightx = 0.5;
-        gbc.weighty = 0.5;
+        gbc.weightx = 0.4;
+        gbc.weighty = 0.25;
         add(allProcessRadio, gbc);
 
         //// Filter Group Radio Buttons ////
         gbc.anchor = GridBagConstraints.LINE_START;
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 3;
+        gbc.weighty = 1;
         add(basicInfoRadio, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 4;
+        gbc.weighty = 1;
         add(resourcesRadio, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 5;
+        gbc.weighty = 1;
         add(cpuInfoRadio, gbc);
 
 
         //// Filter update ////
         gbc.anchor = GridBagConstraints.FIRST_LINE_START;
         gbc.gridx = 0;
-        gbc.gridy = 7;
+        gbc.gridy = 10;
         gbc.weightx = 2;
         gbc.weighty = 1;
         gbc.gridwidth = 2;
@@ -156,7 +159,7 @@ public class FilterPanel extends JPanel {
             public void run() {
                 // Setup pidFilter selection, -1 for all processes, positive int for single
                 int filterPid = -1;
-                if(pluralityBG.getSelection().getActionCommand().equals("pid")) {
+                if (pluralityBG.getSelection().getActionCommand().equals("pid")) {
                     filterPid = Integer.valueOf(pidTextField.getText());
                 }
                 //System.out.println("Filter PID: " + filterPid);

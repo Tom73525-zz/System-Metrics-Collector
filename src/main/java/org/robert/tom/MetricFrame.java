@@ -3,12 +3,15 @@ package org.robert.tom;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * MetricView
- * Author: Robert Muth
- * <p>
+ * @author: Robert Muth
+ *
  * Base class for Metric Collection App's Graphical User Interface
  * Contains a constructor, which sets up all components within a main JFrame window
  */
@@ -19,15 +22,29 @@ public class MetricFrame extends JFrame {
 
     private SQLAdapter dbAdapter;
 
+    private FilterEvent previousEvent;
+
+    private Connection connection;
+
     /**
      * Constructor for main application window, sets title with super(String)
+     *
      * @param windowTitle Title for created frame
      */
     public MetricFrame(String windowTitle) {
         super(windowTitle);
+        setMinimumSize(new Dimension(960,720));
 
         // Create dbAdapter object
-        dbAdapter = new SQLAdapter();
+        try {
+            dbAdapter = new SQLAdapter();
+            connection = dbAdapter.openDbConnection();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        // Initialize previousEvent filter
+        previousEvent = new FilterEvent(this, false, -1, 0);
 
         // Set Layout Manager
         // BorderLayout will keep the Table window sized properly
@@ -35,7 +52,7 @@ public class MetricFrame extends JFrame {
 
 
         // Create Swing Components
-        /**
+        /*
          * Only needs to hold JTable for displaying metrics
          *  STRETCH GOAL: This is where the tabbed panels will live.
          *      Unsure how that works, whether we update both of them and
@@ -46,7 +63,7 @@ public class MetricFrame extends JFrame {
          */
         filters = new FilterPanel();
         final JTable metricsTable = new JTable();
-        JScrollPane tableScrollPane = new JScrollPane(metricsTable);
+        final JScrollPane tableScrollPane = new JScrollPane(metricsTable);
 
 
         // Add Swing Components to content pane
@@ -55,7 +72,6 @@ public class MetricFrame extends JFrame {
         Container c = getContentPane();
         c.add(tableScrollPane, BorderLayout.CENTER);
         c.add(filters, BorderLayout.WEST);
-
 
 
         // Add behaviour
@@ -77,7 +93,6 @@ public class MetricFrame extends JFrame {
                 procs.add(mc.collectMetricsForPid(currentPid));
             }
         } catch (Exception e) {
-            // NEED TO MOVE THIS TO FUNCTION CALL, RETURN NULL to prompt new gathering attempt
             e.printStackTrace();
         }
 
@@ -93,16 +108,13 @@ public class MetricFrame extends JFrame {
         tableModel.setColumnIdentifiers(columns);
         metricsTable.setModel(tableModel);
 
-        // Adding Proc Rows to table
-        for (MCAProcess currentProc : procs) {
-            Object[] metricArray = currentProc.getProcessArray();
-            tableModel.addRow(metricArray);
-        }
-
-        tableModel.fireTableDataChanged();
-
-
-        //// TEMPORARY TABLE FILL ////////////////////////////////////////////////////////////
+//        // Adding Proc Rows to table
+//        for (MCAProcess currentProc : procs) {
+//            Object[] metricArray = currentProc.getProcessArray();
+//            tableModel.addRow(metricArray);
+//        }
+//
+//        tableModel.fireTableDataChanged();
 
 
         filters.addFilterListener(new FilterListener() {
@@ -110,40 +122,45 @@ public class MetricFrame extends JFrame {
                 // Create Table Here
                 ArrayList<MCAProcess> tableProcesses = new ArrayList<MCAProcess>();
 
-                if(event.isNewFlag()){
+
+                if (event.isNewFlag()) {
                     // Add to DB here
                     MetricCollector filterMc = new MetricCollector();
                     try {
                         filterMc.gatherCurrentPidList();
                         tableProcesses = filterMc.collectMetrics();
-                        // dbAdapter = new SQLAdapter();
-                        //boolean storedMetrics = dbAdapter.saveProcessMetrics(tableProcesses);
-                        //System.out.println(storedMetrics);
+                        boolean storedMetrics = dbAdapter.saveProcessMetrics(tableProcesses, connection);
+                        System.out.println("Stored Metrics: " + storedMetrics);
                     } catch (Exception e) {
                         // MOVE THIS TO FUNCTION CALL, RETURN NULL TO PROMPT NEW GATHERING ATTEMPT
                         e.printStackTrace();
                     }
+                } else {
+                    previousEvent = event;
                 }
 
-                // FOR TESTING PURPOSES: TO BE REMOVED ~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+
-                // Populating for single pid
-                MetricCollector filterMc = new MetricCollector();
-                try {
-                    filterMc.gatherCurrentPidList();
-                    tableProcesses = filterMc.collectMetrics();
-                    // dbAdapter = new SQLAdapter();
-                    //boolean storedMetrics = dbAdapter.saveProcessMetrics(tableProcesses);
-                    //System.out.println(storedMetrics);
-                } catch (Exception e) {
-                    // MOVE THIS TO FUNCTION CALL, RETURN NULL TO PROMPT NEW GATHERING ATTEMPT
+                // Retrieve relevant process records from database
+                //  If FilterPid is positive, user wants to see records for a certain process
+                //  Else, user wants to see current records for all processes
+                tableProcesses.clear();
+                try{
+                    if(previousEvent.getFilterPid() > 0) {
+                        tableProcesses = dbAdapter.getMaxStartTime(previousEvent.getFilterPid(), connection);
+                        System.out.println("Filter Pid = " + previousEvent.getFilterPid());
+                        System.out.println("Retrieved " + tableProcesses.size() + " records.");
+                    } else {
+                        tableProcesses = dbAdapter.getProcessLast5SecOlder(connection);
+                        System.out.println("Retrieved " + tableProcesses.size() +" procs");
+                    }
+                } catch(Exception e) {
                     e.printStackTrace();
                 }
-                // FOR TESTING PURPOSES: TO BE REMOVED ~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+
 
-                int[] currentFilterList = event.filterGroups[event.getFilterType()];
+
+                int[] currentFilterList = previousEvent.filterGroups[previousEvent.getFilterType()];
                 ArrayList<Object> tableColumnHeaders = new ArrayList<Object>();
-                for(int currentIndex: currentFilterList) {
-                    tableColumnHeaders.add(event.filterList[currentIndex]);
+                for (int currentIndex : currentFilterList) {
+                    tableColumnHeaders.add(previousEvent.filterList[currentIndex]);
                 }
 
                 // sets Column Identifiers in tableModel to retrieved headers from FilterEvent
@@ -152,32 +169,33 @@ public class MetricFrame extends JFrame {
                 // Clear Table
                 tableModel.setNumRows(0);
 
+                // First sort the arrayList of processes
+                Collections.sort(tableProcesses, new Comparator<MCAProcess>() {
+                    public int compare(MCAProcess o1, MCAProcess o2) {
+                        return o1.getPid() - o2.getPid();
+                    }
+                });
 
+                int scrollBarValue = tableScrollPane.getVerticalScrollBar().getValue();
 
-                // Database Calls here
-//                if(event.getFilterPid() > 0) {
-//                    tableProcesses = dbAdapter.getMaxStartTime(event.getFilterPid());
-//                } else {
-//                    tableProcesses = dbAdapter.getProcessLast5SecOlder();
-//                }
-
-                // Update tableModel with current set of filtered rows
-                for(MCAProcess currentProc: tableProcesses){
+                // Populate the Table Model from the sorted Process ArrayList
+                for (MCAProcess currentProc : tableProcesses) {
                     Object[] currentProcArray = currentProc.getProcessArray();
                     ArrayList<Object> newRow = new ArrayList<Object>();
-                    for(int currentIndex: currentFilterList){
+                    for (int currentIndex : currentFilterList) {
                         newRow.add(currentProcArray[currentIndex]);
                     }
                     tableModel.addRow(newRow.toArray());
                 }
 
+                tableScrollPane.getVerticalScrollBar().setValue(scrollBarValue);
+
                 // Update table contents
                 tableModel.fireTableDataChanged();
             }
-        }); // filters.addFilterListener
+        });
 
-    } // public MetricView(){...}
-
+    }
 
 
 }
