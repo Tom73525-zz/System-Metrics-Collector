@@ -76,7 +76,7 @@ public class SQLAdapter {
 
   /**
    * Closes a database connection
-   * @param connection
+   * @param connection - Connection object
    */
   public void closeDbConnection(Connection connection){
 
@@ -95,7 +95,7 @@ public class SQLAdapter {
    * @param connection - Connection object
    * @return - Returns true if all values are stored into the database.
    */
-  protected boolean saveProcessMetrics(ArrayList<MCAProcess> mcaProcesses,
+  public boolean saveProcessMetrics(ArrayList<MCAProcess> mcaProcesses,
                                        Connection connection){
 
     int count = 0;
@@ -114,12 +114,8 @@ public class SQLAdapter {
       long p_utime = mcaProcess.getUtime();
       long p_startTime = mcaProcess.getStartTime();
 
-      //double p_cpu_utilization = getCPUUsage(mcaProcess,uptime,
-      // metricCollector.getClkTksPerSecond());
-
-      // This is just a dummy input for uptime and clock_ticks
       double p_cpu_utilization = getCpuUsage(mcaProcess,
-              240000.0,100);
+              metricCollector.getSystemUptime(), App.getSystemClockInTicks());
 
       try {
 
@@ -174,7 +170,7 @@ public class SQLAdapter {
    * @param connection - Connection object
    * @return - Returns name of the process, null if no such pid is found.
    */
-  protected String getProcessName(int pid, Connection connection){
+  private String getProcessName(int pid, Connection connection){
 
     try {
 
@@ -190,6 +186,7 @@ public class SQLAdapter {
       preparedStatement.close();
       return pName;
     }catch (Exception e){
+      e.printStackTrace();
     }
     return null;
   }
@@ -200,7 +197,7 @@ public class SQLAdapter {
    * @param connection - Connection object
    * @return - Returns ppid of the process, returns -1 if no such pid is found.
    */
-  protected int getParentPid(int pid, Connection connection){
+  private int getParentPid(int pid, Connection connection){
     try {
 
       String getPpid = "SELECT ppid " +
@@ -215,6 +212,7 @@ public class SQLAdapter {
 
       return ppid;
     }catch (Exception e){
+      e.printStackTrace();
     }
     return -1;
   }
@@ -226,7 +224,7 @@ public class SQLAdapter {
    * @return - Returns an arraylist of MCAProcess containing MCAProcess records
    * of the given pid.
    */
-  protected ArrayList<MCAProcess> getProcessLast5SecOlder(Connection connection){
+  public ArrayList<MCAProcess> getProcessLast5SecOlder(Connection connection){
     ArrayList<MCAProcess> mcaProcesses = new ArrayList<MCAProcess>();
     try {
 
@@ -275,7 +273,7 @@ public class SQLAdapter {
    * @return - Returns the latest timestamp of pid, null if no such pid is
    * found.
    */
-  protected Timestamp getLatestTime(int pid, Connection connection){
+  public Timestamp getLatestTime(int pid, Connection connection){
 
     try {
 
@@ -295,7 +293,7 @@ public class SQLAdapter {
       return Timestamp.valueOf(timestamp);
 
     }catch (Exception e){
-
+      e.printStackTrace();
     }
     return null;
   }
@@ -329,7 +327,7 @@ public class SQLAdapter {
    * @param connection - Connection object.
    * @return ArrayList of MCAProcesses.
    */
-  protected ArrayList<MCAProcess> getMaxStartTime(int pid, Connection connection){
+  public ArrayList<MCAProcess> getMaxStartTime(int pid, Connection connection){
     ArrayList<MCAProcess> mcaProcesses = new ArrayList<MCAProcess>();
 
 
@@ -369,7 +367,7 @@ public class SQLAdapter {
       resultSet.close();
 
     }catch(Exception e){
-
+      e.printStackTrace();
     }
     return mcaProcesses;
   }
@@ -380,7 +378,7 @@ public class SQLAdapter {
    * @param connection - Connection object
    * @return - Return true if deletion was successful.
    */
-  protected boolean deleteProcess(int pid, Connection connection){
+  public boolean deleteProcess(int pid, Connection connection){
     try{
 
       PreparedStatement preparedStatement1 = connection
